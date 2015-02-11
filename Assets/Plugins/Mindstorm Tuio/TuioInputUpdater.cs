@@ -9,10 +9,13 @@ namespace Tuio
 
 		void Awake()
 		{
-			if(!instance)
-				instance = this;
-			else
+			if(instance)
+            {
 				Destroy(this);
+                return;
+            }
+
+            instance = this;
 				
 			Tuio.Input.Init();
 			gameObject.hideFlags = HideFlags.HideAndDontSave;
