@@ -12,12 +12,12 @@ namespace Tuio
 	using Tuio;
 	using System.Linq;
 
-	public static class TuioInput
+	public static class Input
 	{
 		private static TuioTracking tracking = null;
 
 		private static List<int> touchOrder = new List<int>();
-		private static Dictionary<int, Tuio.Touch> Touches =  new Dictionary<int, Tuio.Touch>();
+		private static Dictionary<int, Tuio.Touch> _touches =  new Dictionary<int, Tuio.Touch>();
 		
 		public static int touchCount
 		{
@@ -31,8 +31,22 @@ namespace Tuio
 		public static Tuio.Touch GetTouch(int index)
 		{
 			CreateUpdaterIfNeeded();
-			return Touches[touchOrder[index]];
+			return _touches[touchOrder[index]];
 		}
+
+        public static Touch[] touches
+        {
+            get
+            {
+                CreateUpdaterIfNeeded();
+                var result = new Touch[touchCount];
+                for(int i = 0; i < touchCount; ++i)
+                {
+                    result[i] = GetTouch(i);
+                }
+                return result;
+            }
+        }
 		
 		private static void CreateUpdaterIfNeeded()
 		{
@@ -55,7 +69,7 @@ namespace Tuio
 		
 		
 		private static List<Tuio.Touch> getNewTouches () {
-			return Touches.Values.Where(t => t.phase == TouchPhase.Began).ToList();	
+			return _touches.Values.Where(t => t.phase == TouchPhase.Began).ToList();	
 		}
 		
 		internal static void Update()
@@ -79,12 +93,12 @@ namespace Tuio
 		/// </summary>
 		private static void deleteNonCurrentTouches()
 		{
-			int[] deadTouches = (from Tuio.Touch t in Touches.Values
+			int[] deadTouches = (from Tuio.Touch t in _touches.Values
 					where !t.IsCurrent
 					select t.touchId).ToArray();
 			foreach (int touchId in deadTouches)
 			{
-				Touches.Remove(touchId);
+				_touches.Remove(touchId);
 				touchOrder.Remove(touchId);
 			}
 		}
@@ -94,7 +108,7 @@ namespace Tuio
 		/// </summary>
 		private static void updateAllTouchesAsTemp()
 		{
-			foreach (Tuio.Touch t in Touches.Values) t.SetTemp();
+			foreach (Tuio.Touch t in _touches.Values) t.SetTemp();
 		}
 		
 		/// <summary>
@@ -115,10 +129,10 @@ namespace Tuio
 				
 				// Get the touch relating to the key
 				Tuio.Touch t = null;
-				if (Touches.ContainsKey(cursor.SessionID))
+				if (_touches.ContainsKey(cursor.SessionID))
 				{
 					// It's not a new one
-					t = Touches[cursor.SessionID];
+					t = _touches[cursor.SessionID];
 					// Update it's position
 					t.SetNewTouchPoint(getScreenPoint(cursor)/*, getRawPoint(cursor)*/);
 				}
@@ -126,7 +140,7 @@ namespace Tuio
 				{
 					// It's a new one
 					t = buildTouch(cursor);
-					Touches.Add(cursor.SessionID, t);
+					_touches.Add(cursor.SessionID, t);
 					touchOrder.Add(cursor.SessionID);
 				}
 			}
@@ -153,7 +167,7 @@ namespace Tuio
 		/// </summary>
 		private static void updateEndedTouches()
 		{
-			var nonCurrent = from Tuio.Touch t in Touches.Values
+			var nonCurrent = from Tuio.Touch t in _touches.Values
 					where !t.IsCurrent
 					select t;
 			foreach (Tuio.Touch t in nonCurrent) t.phase = TouchPhase.Ended;

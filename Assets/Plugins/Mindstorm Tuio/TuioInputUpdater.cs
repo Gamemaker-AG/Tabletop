@@ -14,18 +14,18 @@ namespace Tuio
 			else
 				Destroy(this);
 				
-			TuioInput.Init();
+			Tuio.Input.Init();
 			gameObject.hideFlags = HideFlags.HideAndDontSave;
 		}
 
 		void Update()
 		{
-			TuioInput.Update();
+			Tuio.Input.Update();
 		}
 		
 		void OnApplicationQuit()
 		{
-			TuioInput.Stop();
+			Tuio.Input.Stop();
 			DestroyImmediate(gameObject);
 		}
 		
