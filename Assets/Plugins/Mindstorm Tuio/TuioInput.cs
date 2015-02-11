@@ -1,3 +1,4 @@
+#define TOUCH_DEBUG
 /*
 Author - Sascha Graeff
 
@@ -18,19 +19,32 @@ namespace Tuio
 
 		private static List<int> touchOrder = new List<int>();
 		private static Dictionary<int, Tuio.Touch> _touches =  new Dictionary<int, Tuio.Touch>();
+#if TOUCH_DEBUG
+        private static Tuio.Touch mouseTouch;
+#endif
 		
 		public static int touchCount
 		{
 			get
 			{
 				CreateUpdaterIfNeeded();
-				return touchOrder.Count;
-			}
+#if !TOUCH_DEBUG
+                return touchOrder.Count;
+#else
+				return touchOrder.Count + (mouseTouch != null ? 1 : 0);
+#endif
+            }
 		}
 		
 		public static Tuio.Touch GetTouch(int index)
 		{
 			CreateUpdaterIfNeeded();
+#if TOUCH_DEBUG
+            if(index == touchOrder.Count)
+            {
+                return mouseTouch;
+            }
+#endif
 			return _touches[touchOrder[index]];
 		}
 
@@ -101,6 +115,9 @@ namespace Tuio
 				_touches.Remove(touchId);
 				touchOrder.Remove(touchId);
 			}
+#if TOUCH_DEBUG
+            if(mouseTouch != null && !mouseTouch.IsCurrent) mouseTouch = null;
+#endif
 		}
 		
 		/// <summary>
@@ -109,6 +126,9 @@ namespace Tuio
 		private static void updateAllTouchesAsTemp()
 		{
 			foreach (Tuio.Touch t in _touches.Values) t.SetTemp();
+#if TOUCH_DEBUG
+            if(mouseTouch != null) mouseTouch.SetTemp();
+#endif
 		}
 		
 		/// <summary>
@@ -144,6 +164,23 @@ namespace Tuio
 					touchOrder.Add(cursor.SessionID);
 				}
 			}
+
+#if TOUCH_DEBUG
+            if(mouseTouch == null)
+            {
+                if(UnityEngine.Input.GetMouseButton(0))
+                {
+                    mouseTouch = new Tuio.Touch(-1, UnityEngine.Input.mousePosition);
+                }
+            }
+            else
+            {
+                if(UnityEngine.Input.GetMouseButton(0))
+                {
+                    mouseTouch.SetNewTouchPoint(UnityEngine.Input.mousePosition);
+                }
+            }
+#endif
 		}
 		
 		private static Tuio.Touch buildTouch(Tuio2DCursor cursor)
@@ -171,6 +208,9 @@ namespace Tuio
 					where !t.IsCurrent
 					select t;
 			foreach (Tuio.Touch t in nonCurrent) t.phase = TouchPhase.Ended;
+#if TOUCH_DEBUG
+            if(mouseTouch != null && !mouseTouch.IsCurrent) mouseTouch.phase = TouchPhase.Ended;
+#endif
 		}
 		
 		public static Vector2 getRawPoint(Tuio2DCursor data)
