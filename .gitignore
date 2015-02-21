@@ -16,6 +16,12 @@
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
+# Huge Photoshop files
+*.psd
+
 # UnityVS
 Assets/UnityVS/
 Assets/UnityVS.meta
+
+# Textures, Blender files and Materials
+Assets/scene/

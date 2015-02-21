@@ -33,6 +33,6 @@ namespace Tuio
 {
 	public class TuioConfiguration
 	{
-	    public int Port = 5502;
+	    public int Port = 3333;
 	}
 }
