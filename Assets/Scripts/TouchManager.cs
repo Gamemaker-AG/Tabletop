@@ -35,7 +35,7 @@ public class TouchManager : MonoBehaviour
 				{
 					// put character in temporary list
 					_lastRemovedCharacters.Add (_touchList[k]);
-					_touchList[k].getPlayer().removeCharacter(_touchList[k].getCharacter());
+					_touchList[k].getPlayer().removeCharacter(_touchList[k].getCharacter()); 
 				}
 				_touchList[k].removePanel();
 				_touchList.RemoveAt(k);
@@ -59,13 +59,7 @@ public class TouchManager : MonoBehaviour
 				_touchList.Add(f);
 				foreach(TouchField c in _lastRemovedCharacters)
 				{
-					if(f.getFieldRect().Contains(c.getCharacter().getPositionVector()))
-					{
-						f.setCharacter(c.getCharacter());
-						c.getCharacter().setPosition(new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100));
-						c.getCharacter().getPlayer().addCharacter(c.getCharacter()); // Re-add character to player
-						break;
-					}
+                    c.getPlayer().addCharacter(c.getCharacter()); // re-add character ; responsibility if this re-add is correct lies by the player class
 				}
 			}
 		}

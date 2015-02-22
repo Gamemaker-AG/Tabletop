@@ -10,7 +10,7 @@ public class Character
 		_resistance,
 		_armor;
 	private Rect _position;
-	private static GUI _gui;
+	//private static GUI _gui;
 	private bool _visibility = true;
 	private Player _player;
 
@@ -27,7 +27,7 @@ public class Character
 	}
 	public void setGUI(GUI gui)
 	{
-		_gui = gui;
+		//_gui = gui;
 	}
 
 	public void getDamage(int amountOfDamage)

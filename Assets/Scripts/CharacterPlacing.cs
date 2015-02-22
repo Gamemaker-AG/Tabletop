@@ -5,7 +5,7 @@ public class CharacterPlacing : GameMode {
 	public Texture _circle_Texture;
 	private int _characterSetCounter = 0; // amount of placed characters
 	private Player _player;
-	private GUI _gui;
+	//private GUI _gui;
 	private bool[] _characterset = new bool[5];
 
 	public CharacterPlacing(Player player, Texture circle)//, GUI gui)
@@ -31,9 +31,10 @@ public class CharacterPlacing : GameMode {
 			{
 				if((new Rect(150, 100 + 150*i, 100, 100)).Contains(f.getPosition()) && !_characterset[i]) // Touch is in circle
 				{
-					System.Random r = new System.Random();
-					Character c = new Character(r.Next()%100, 0, 3, 3, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
-					c.setGUI(_gui);
+                    //System.Random r = new System.Random();
+                    //Character c = new Character(r.Next() % 100, 0, 3, 3, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
+                    Character c = new Character(100, 0, 3, 3, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
+					//c.setGUI(_gui);
 					c.getDamage(30);
 					f.setCharacter(c);
 					_player.addCharacter(c);
@@ -45,7 +46,9 @@ public class CharacterPlacing : GameMode {
 		}
 		if(_characterSetCounter == 5) // all characters set
 		{
-			//this = new ...
+            GameManager._currentGameMode = new MoveRoutine(_player); // TODO: später soll andere seite dran sein
+            GameManager._canvas.GetComponent<Sidebar>().resetResults();
+            _player.resetCharacterOrder();
 		}
 	}
 }

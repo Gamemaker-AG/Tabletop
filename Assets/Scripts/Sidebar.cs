@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Sidebar : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class Sidebar : MonoBehaviour
 		_sidebar_ArrowUp,
 		_dice_reload;
 	public bool _isLeftSidebar; // TODO: Für die andere Seite machen
+    private List<int> _results = new List<int>();
 
 	// Use this for initialization
 	void Start () 
@@ -53,6 +55,7 @@ public class Sidebar : MonoBehaviour
 			if(_dice_speed <= 1)
 			{
 				_dice_numberToFind = 6-(int)_dice_counter;
+                _results.Add(_dice_numberToFind);
 				print("Nummer ist: " + _dice_numberToFind);
 			}
 		}
@@ -135,4 +138,12 @@ public class Sidebar : MonoBehaviour
 		_dice_speed = 250;
 		_dice_counter = (float)((new System.Random()).NextDouble())*6f;
 	}
+    public List<int> getResults()
+    {
+        return _results;
+    }
+    public void resetResults()
+    {
+        _results.Clear();
+    }
 }
