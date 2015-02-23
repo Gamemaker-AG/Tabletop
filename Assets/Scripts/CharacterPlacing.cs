@@ -31,6 +31,7 @@ public class CharacterPlacing : GameMode {
 			{
 				if((new Rect(150, 100 + 150*i, 100, 100)).Contains(f.getPosition()) && !_characterset[i]) // Touch is in circle
 				{
+					Debug.Log("Set Character");
                     //System.Random r = new System.Random();
                     //Character c = new Character(r.Next() % 100, 0, 3, 3, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
                     Character c = new Character(100, 0, 3, 3, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values

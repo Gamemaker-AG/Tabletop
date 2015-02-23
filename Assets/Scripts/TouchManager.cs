@@ -5,6 +5,7 @@ public class TouchManager : MonoBehaviour
 {
 	public GameObject _panel;
 	public static System.Collections.Generic.List<TouchField> _touchList = new System.Collections.Generic.List<TouchField>();
+	public static System.Collections.Generic.List<TouchField> _bufferTouchList = new System.Collections.Generic.List<TouchField>(); // for touches 
 	private System.Collections.Generic.List<TouchField> _lastRemovedCharacters = new System.Collections.Generic.List<TouchField>();
 	private float _xRelative, _yRelative;
 	public Texture tex;
@@ -50,17 +51,44 @@ public class TouchManager : MonoBehaviour
 			{
 				_touchHasField = _touchHasField | _touchList[k].TouchInField(Tuio.Input.GetTouch(i).position);
 			}
+			for(int k = 0; !_touchHasField && k < _bufferTouchList.Count; k++)
+			{
+				_touchHasField = _touchHasField | _bufferTouchList[k].TouchInField(Tuio.Input.GetTouch(i).position);
+			}
 			if(!_touchHasField) // Touch without field -> create new field for this touch
 			{
 				GameObject o = Instantiate (_panel) as GameObject; // create a "copy" of the panel
 				o.transform.SetParent(transform, false);
 				TouchField f = new TouchField(Tuio.Input.GetTouch(i).position, o, Tuio.Input.GetTouch(i)); // create a touchField for this touch
 				//print (o.transform.localPosition);
-				_touchList.Add(f);
+				_bufferTouchList.Add(f);
+			}
+		}
+
+		
+		foreach(TouchField tf in _bufferTouchList)
+		{
+			if(Time.realtimeSinceStartup - tf.getTime() >= 1)
+			{
+				Debug.Log ("Add to real list");
+				tf.setPanelPosition();
+
+				_touchList.Add(tf);
 				foreach(TouchField c in _lastRemovedCharacters)
 				{
-                    c.getPlayer().addCharacter(c.getCharacter()); // re-add character ; responsibility if this re-add is correct lies by the player class
+					Debug.Log ("Re-Add player");
+					c.getPlayer().addCharacter(c.getCharacter()); // re-add character ; responsibility if this re-add is correct lies by the player class
 				}
+				//_bufferTouchList.Remove(tf);
+			}
+		}
+		// delete fields wich are older than 1 sec and therefore in the _touchList
+		foreach(TouchField tl in _touchList)
+		{
+			if(_bufferTouchList.Contains(tl))
+			{
+				Debug.Log ("Remove ");
+				_bufferTouchList.Remove(tl);
 			}
 		}
 	}
@@ -72,6 +100,7 @@ public class TouchField
 	private GameObject _panel;
 	private Tuio.Touch _touch;
 	private Character _character = null;
+	private float _creationTime;
 
 	public TouchField(Vector2 position, GameObject panel, Tuio.Touch touch)
 	{
@@ -79,7 +108,8 @@ public class TouchField
 		_size = new Vector2 (100, 100);
 		_panel = panel;
 		_touch = touch;
-		_panel.transform.position = new Vector3 (_position.x, _position.y, 0);
+		//_panel.transform.position = new Vector3 (_position.x, _position.y, 0);
+		_creationTime = Time.realtimeSinceStartup;
 	}
 	public TouchField(Vector2 position, Vector2 size, GameObject panel, Tuio.Touch touch)
 	{
@@ -88,6 +118,7 @@ public class TouchField
 		_panel = panel;
 		_touch = touch;
 		_panel.transform.position = new Vector3 (_position.x, _position.y, 0);
+		_creationTime = Time.realtimeSinceStartup;
 	}
 	public bool TouchInField(Vector2 touchPosition)
 	{
@@ -129,5 +160,17 @@ public class TouchField
 	public Player getPlayer()
 	{
 		return _character.getPlayer();
+	}
+	public float getTime()
+	{
+		return _creationTime;
+	}
+	public GameObject getPanel()
+	{
+		return _panel;
+	}
+	public void setPanelPosition()
+	{
+		_panel.transform.position = new Vector3 (_position.x, _position.y, 0);
 	}
 }
