@@ -5,26 +5,35 @@ public class Character
 {
 	private int _maxHealth,
 		_currentHealth,
-		_weaponType,
-		_accuracy, // balistik
+		_accuracy, // ballistik
 		_resistance,
 		_armor;
 	private Rect _position;
 	//private static GUI _gui;
 	private bool _visibility = true;
 	private Player _player;
+	private static Weapon[] _weapon = new Weapon[2];
 
 	public Character(int health, int weaponType, int accuracy, int resistance, int armor, Rect position, Player player)
 	{
+		
 		_maxHealth = health;
 		_currentHealth = health;
-		_weaponType = weaponType;
 		_accuracy = accuracy;
 		_resistance = resistance;
 		_armor = armor;
 		_position = position;
 		_player = player;
+		
+		if (_weapon[0] = null) {
+			_weapon[0] = new Weapon(8);
+		}
+		if (weapon[1] = null) {
+			_weapon[1] = new Weapon(4);
+		}
+		
 	}
+	
 	public void setGUI(GUI gui)
 	{
 		//_gui = gui;
@@ -69,5 +78,18 @@ public class Character
 	public void setPosition(Rect newPosition)
 	{
 		_position = newPosition;
+	}
+}
+
+public class Weapon{
+
+	private int _range;
+	
+	public weapon (int range) {
+		_range = range;
+	}
+	
+	public int getRange() {
+		return _range;
 	}
 }
