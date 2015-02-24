@@ -33,7 +33,8 @@ public class Sidebar : MonoBehaviour
 		_dice_Texture,
 		_dice_BorderTexture,
 		_sidebar_ArrowUp,
-		_dice_reload;
+		_dice_reload,
+		_nextCharacterButtons;
 	private List<int> _1_results = new List<int>();
 	private List<float> _1_diceResults = new List<float>();
 	private List<int> _2_results = new List<int>();
@@ -77,7 +78,8 @@ public class Sidebar : MonoBehaviour
 		GUI.DrawTexture(new Rect(14, (int)_1_dice_yPos + _1_sibebar_yOffset + 278 + Screen.height/2, 84, 84), _dice_BorderTexture);
 		GUI.DrawTexture(new Rect(14, (int)_1_dice_yPos + _1_sibebar_yOffset + 378 + Screen.height/2, 84, 84), _dice_BorderTexture);
 		GUI.DrawTexture(new Rect(14, (int)_1_dice_yPos + _1_sibebar_yOffset + 478 + Screen.height/2, 84, 84), _dice_BorderTexture);
-		
+
+		GUI.DrawTexture(new Rect(15, (int)_1_dice_yPos + _1_sibebar_yOffset + 570 + Screen.height/2, 80, 280), _nextCharacterButtons);
 		
 		if(_1_dice_numberToFind == -1)
 		{
@@ -114,7 +116,8 @@ public class Sidebar : MonoBehaviour
 		GUI.DrawTexture(new Rect(14, (int)_2_dice_yPos + _2_sibebar_yOffset + 278 + Screen.height/2, 84, 84), _dice_BorderTexture);
 		GUI.DrawTexture(new Rect(14, (int)_2_dice_yPos + _2_sibebar_yOffset + 378 + Screen.height/2, 84, 84), _dice_BorderTexture);
 		GUI.DrawTexture(new Rect(14, (int)_2_dice_yPos + _2_sibebar_yOffset + 478 + Screen.height/2, 84, 84), _dice_BorderTexture);
-		
+			
+		GUI.DrawTexture(new Rect(15, (int)_2_dice_yPos + _2_sibebar_yOffset + 570 + Screen.height/2, 80, 280), _nextCharacterButtons);
 		
 		if(_2_dice_numberToFind == -1)
 		{
