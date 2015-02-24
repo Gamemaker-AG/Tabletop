@@ -4,30 +4,46 @@ using System.Collections.Generic;
 
 public class Sidebar : MonoBehaviour
 {
-	int _Animation = 0,
+	int _1_Animation = 0,
 		// 0 = no animation
 		// 1 = plane is moving up
 		// 2 = no animation
 		// 3 = plane is moving down
-		_dice_numberToFind = -2; // -1 -> Do dice animation, everything else: No animation, number has been found
-	float _elapsed_time, 
-		_elapsed_time_dice,
+		_1_dice_numberToFind = -2, // -1 -> Do dice animation, everything else: No animation, number has been found
+		_1_sibebar_yOffset = -70,
+		
+		_2_Animation = 0,
+		// 0 = no animation
+		// 1 = plane is moving up
+		// 2 = no animation
+		// 3 = plane is moving down
+		_2_dice_numberToFind = -2, // -1 -> Do dice animation, everything else: No animation, number has been found
+		_2_sibebar_yOffset = -70;
+  	float _elapsed_time, 
+		_1_elapsed_time_dice,
 		_pixelPerSecond,
-		_dice_counter, 
-		_dice_speed = 150, 
-		_dice_yPos;
-	public Texture _dice_backgroundTexture,
+		_1_dice_counter, 
+		_dice_speed = 100, 
+		_1_dice_yPos,
+
+		_2_elapsed_time_dice,
+		_2_dice_counter, 
+		_2_dice_yPos;
+  	public Texture _dice_backgroundTexture,
 		_dice_Texture,
 		_dice_BorderTexture,
 		_sidebar_ArrowUp,
 		_dice_reload;
-	public bool _isLeftSidebar; // TODO: Für die andere Seite machen
-    private List<int> _results = new List<int>();
-
+	private List<int> _1_results = new List<int>();
+	private List<float> _1_diceResults = new List<float>();
+	private List<int> _2_results = new List<int>();
+	private List<float> _2_diceResults = new List<float>();
+  
 	// Use this for initialization
 	void Start () 
 	{
-		_dice_yPos = Screen.height / 2 + 10;
+		_1_dice_yPos = Screen.height / 2 + 10;
+		_2_dice_yPos = Screen.height / 2 + 10;
 		resetDice ();
 		
 		_pixelPerSecond = Screen.height/1080f * 2500f; // same speed for different screen height
@@ -39,85 +55,209 @@ public class Sidebar : MonoBehaviour
 	}
 	void OnGUI()
 	{
+		OnGUI1 ();
+		OnGUI2 ();
+	}
+	private void OnGUI1()
+	{
 		GUI.DrawTexture(new Rect(0, Screen.height - 130, 96, 130), _sidebar_ArrowUp);
-		GUI.DrawTexture(new Rect(0, _dice_yPos + Screen.height/2, 120, Screen.height), _dice_backgroundTexture);
-		GUI.DrawTextureWithTexCoords(new Rect(15, (int)_dice_yPos + 150 + Screen.height/2, 80, 80), _dice_Texture, new Rect(0, (int)_dice_counter * ((85f+1/_dice_counter) / (float)_dice_Texture.height), 1, 85 / (float)_dice_Texture.height));
-		GUI.DrawTexture(new Rect(14, (int)_dice_yPos + 148 + Screen.height/2, 84, 84), _dice_BorderTexture);
-
-		GUI.DrawTexture(new Rect(15, (int)_dice_yPos + 250 + Screen.height/2, 80, 80), _dice_reload);
-		GUI.DrawTexture(new Rect(14, (int)_dice_yPos + 148 + Screen.height/2, 84, 84), _dice_BorderTexture);
-
-
-		if(_dice_numberToFind == -1)
+		GUI.DrawTexture(new Rect(0, _1_dice_yPos + Screen.height/2, 120, Screen.height), _dice_backgroundTexture);
+		GUI.DrawTextureWithTexCoords(new Rect(15, (int)_1_dice_yPos + _1_sibebar_yOffset + 80 + Screen.height/2, 80, 80), _dice_Texture, new Rect(0, (int)_1_dice_counter * ((85f+1/_1_dice_counter) / (float)_dice_Texture.height), 1, 85 / (float)_dice_Texture.height));
+		GUI.DrawTexture(new Rect(14, (int)_1_dice_yPos + _1_sibebar_yOffset + 78 + Screen.height/2, 84, 84), _dice_BorderTexture);
+		
+		GUI.DrawTexture(new Rect(15, (int)_1_dice_yPos + _1_sibebar_yOffset + 180 + Screen.height/2, 80, 80), _dice_reload);
+		
+		for(int i = 0; i < 3 && i < _1_results.Count; i++)
 		{
-			_dice_counter += (Time.realtimeSinceStartup - _elapsed_time)*(_dice_speed);
-			_dice_counter %=6;
+			GUI.DrawTextureWithTexCoords(new Rect(15, (int)_1_dice_yPos + _1_sibebar_yOffset + 280 + Screen.height/2 + i * 100, 80, 80),
+			                             _dice_Texture,
+			                             new Rect(0, (int)(_1_diceResults[i]) * ((85f+1/(_1_diceResults[i])) / (float)_dice_Texture.height), 1, 85 / (float)_dice_Texture.height));
+		}
+		
+		GUI.DrawTexture(new Rect(14, (int)_1_dice_yPos + _1_sibebar_yOffset + 278 + Screen.height/2, 84, 84), _dice_BorderTexture);
+		GUI.DrawTexture(new Rect(14, (int)_1_dice_yPos + _1_sibebar_yOffset + 378 + Screen.height/2, 84, 84), _dice_BorderTexture);
+		GUI.DrawTexture(new Rect(14, (int)_1_dice_yPos + _1_sibebar_yOffset + 478 + Screen.height/2, 84, 84), _dice_BorderTexture);
+		
+		
+		if(_1_dice_numberToFind == -1)
+		{
+			_1_dice_counter += (Time.realtimeSinceStartup - _elapsed_time)*(_dice_speed);
+			_1_dice_counter %=6;
 			if(_dice_speed <= 1)
 			{
-				_dice_numberToFind = 6-(int)_dice_counter;
-                _results.Add(_dice_numberToFind);
-				print("Nummer ist: " + _dice_numberToFind);
-			}
-		}
+				_1_dice_numberToFind = 6-(int)_1_dice_counter;
+				_1_results.Add(_1_dice_numberToFind);
+				_1_diceResults.Add(_1_dice_counter);
+				print("Nummer ist: " + _1_dice_numberToFind);
+	      	}
+	    }
 	}
-	// Update is called once per frame
+	private void OnGUI2()
+	{
+		Vector2 pivotPoint = new Vector2(Screen.width/2, Screen.height/2);
+		GUIUtility.RotateAroundPivot(180, pivotPoint);
+
+		GUI.DrawTexture(new Rect(0, Screen.height - 130, 96, 130), _sidebar_ArrowUp);
+		GUI.DrawTexture(new Rect(0, _2_dice_yPos + Screen.height/2, 120, Screen.height), _dice_backgroundTexture);
+		GUI.DrawTextureWithTexCoords(new Rect(15, (int)_2_dice_yPos + _2_sibebar_yOffset + 80 + Screen.height/2, 80, 80), _dice_Texture, new Rect(0, (int)_2_dice_counter * ((85f+1/_2_dice_counter) / (float)_dice_Texture.height), 1, 85 / (float)_dice_Texture.height));
+		GUI.DrawTexture(new Rect(14, (int)_2_dice_yPos + _2_sibebar_yOffset + 78 + Screen.height/2, 84, 84), _dice_BorderTexture);
+		
+		GUI.DrawTexture(new Rect(15, (int)_2_dice_yPos + _2_sibebar_yOffset + 180 + Screen.height/2, 80, 80), _dice_reload);
+		
+		for(int i = 0; i < 3 && i < _2_results.Count; i++)
+		{
+			GUI.DrawTextureWithTexCoords(new Rect(15, (int)_2_dice_yPos + _2_sibebar_yOffset + 280 + Screen.height/2 + i * 100, 80, 80),
+			                             _dice_Texture,
+			                             new Rect(0, (int)(_2_diceResults[i]) * ((85f+1/(_2_diceResults[i])) / (float)_dice_Texture.height), 1, 85 / (float)_dice_Texture.height));
+		}
+		
+		GUI.DrawTexture(new Rect(14, (int)_2_dice_yPos + _2_sibebar_yOffset + 278 + Screen.height/2, 84, 84), _dice_BorderTexture);
+		GUI.DrawTexture(new Rect(14, (int)_2_dice_yPos + _2_sibebar_yOffset + 378 + Screen.height/2, 84, 84), _dice_BorderTexture);
+		GUI.DrawTexture(new Rect(14, (int)_2_dice_yPos + _2_sibebar_yOffset + 478 + Screen.height/2, 84, 84), _dice_BorderTexture);
+		
+		
+		if(_2_dice_numberToFind == -1)
+		{
+			_2_dice_counter += (Time.realtimeSinceStartup - _elapsed_time)*(_dice_speed);
+			_2_dice_counter %=6;
+			if(_dice_speed <= 1)
+			{
+				_2_dice_numberToFind = 6-(int)_2_dice_counter;
+				_2_results.Add(_2_dice_numberToFind);
+				_2_diceResults.Add(_2_dice_counter);
+				print("Nummer ist: " + _2_dice_numberToFind);
+      		}
+   		}
+		GUIUtility.RotateAroundPivot(-180, pivotPoint);
+  	}
+  // Update is called once per frame
 	void Update () 
+	{
+		Update1();
+		Update2();
+		_dice_speed *= 1f-((Time.realtimeSinceStartup - _elapsed_time));
+		_elapsed_time = Time.realtimeSinceStartup;
+  	}
+	void Update1 () 
 	{
 		for(int i = 0; i < Tuio.Input.touchCount; i++)
 		{
 			Vector2 pos = Tuio.Input.GetTouch(i).position;
 			
 			if(pos.x < 150 && pos.y < 150 // op/down arrow
-			   && _Animation % 2 != 1) // AND there's no animation
+			   && _1_Animation % 2 != 1) // AND there's no animation
 			{
-				print ("sldkh" + (Screen.height - ((int)_dice_yPos + 250 + Screen.height/2)));
+				print ("sldkh" + (Screen.height - ((int)_1_dice_yPos + 250 + Screen.height/2)));
 				_pixelPerSecond = Screen.height/1080f * 2500f; // same speed for different screen height
 				_elapsed_time = Time.realtimeSinceStartup;
-				_Animation++;
+				_1_Animation++;
 			}
 			else if(pos.x >= 15 && pos.x <= 95
-			   && pos.y >= Screen.height - ((int)_dice_yPos + 330 + Screen.height/2) && pos.y <= Screen.height - ((int)_dice_yPos + 250 + Screen.height/2)
-			   && _dice_numberToFind != -1)
+			        && pos.y >= Screen.height - ((int)_1_dice_yPos + _1_sibebar_yOffset + 260 + Screen.height/2) && pos.y <= Screen.height - ((int)_1_dice_yPos + _1_sibebar_yOffset + 180 + Screen.height/2)
+			        && _1_dice_numberToFind != -1)
 			{
-				startDice();
-      		}
-    	}
-
-		doAnimation();
-		_dice_speed *= 1f-((Time.realtimeSinceStartup - _elapsed_time));
-		_elapsed_time = Time.realtimeSinceStartup;
-  	}
-	private void doAnimation()
+				startDice(1);
+			}
+		}
+		
+		doAnimation1();
+	}
+	void Update2 () 
 	{
-		if(_Animation % 2 != 0) // only 1 and 3 are movement, 0 and 2 are static states
+		for(int i = 0; i < Tuio.Input.touchCount; i++)
+		{
+			Vector2 pos = Tuio.Input.GetTouch(i).position;
+
+			Debug.Log ("" + (pos.x >= Screen.width - 95) + "\n" +  
+			        (pos.x <= Screen.width - 15) + "\n" + 
+			           (pos.y) + " - " + (-_2_sibebar_yOffset) + "\n" + 
+			           (pos.y <= -_2_sibebar_yOffset));
+
+			if(pos.x > Screen.width - 150 && pos.y > Screen.height - 150 // op/down arrow
+			   && _2_Animation % 2 != 1) // AND there's no animation
+			{
+				print ("sldkh" + (Screen.height - ((int)_2_dice_yPos + 250 + Screen.height/2)));
+				_pixelPerSecond = Screen.height/1080f * 2500f; // same speed for different screen height
+				_elapsed_time = Time.realtimeSinceStartup;
+				_2_Animation++;
+			}
+			else if(pos.x >= Screen.width - 95 
+			        && pos.x <= Screen.width - 15
+			        && pos.y >= -_2_sibebar_yOffset + 40
+			        && pos.y <= -_2_sibebar_yOffset + 140
+			        && _2_dice_numberToFind != -1)
+			{
+				startDice(2);
+			}
+		}
+		
+		doAnimation2();
+  	}
+	private void doAnimation1()
+	{
+		if(_1_Animation % 2 != 0) // only 1 and 3 are movement, 0 and 2 are static states
 		{
 
 			float offset = CalcOffset();
 
-			if (_Animation == 1) { // DOWN
-				if (_dice_yPos + offset >= transform.position.y)
+			if (_1_Animation == 1) { // DOWN
+				if (_1_dice_yPos + offset >= transform.position.y)
 				{
-					_Animation++;
+					_1_Animation++;
 					offset = 0;
-					_dice_yPos = transform.position.y;
+					_1_dice_yPos = transform.position.y;
 				}
 				else
 				{
-					_dice_yPos += offset;
+					_1_dice_yPos += offset;
 				}
 			} 
-			else if (_Animation == 3) // UP
+			else if (_1_Animation == 3) // UP
 			{				
-				if (_dice_yPos - offset <= 0 - transform.position.y)
+				if (_1_dice_yPos - offset <= 0 - transform.position.y)
 				{
-					_Animation=0;
+					_1_Animation=0;
 					offset = 0;
-					_dice_yPos = 0 - transform.position.y;
+					_1_dice_yPos = 0 - transform.position.y;
 				}
 				else
 				{
-					_dice_yPos -= offset;
+					_1_dice_yPos -= offset;
 				}
+			}
+		}
+	}
+	private void doAnimation2()
+	{
+		if(_2_Animation % 2 != 0) // only 1 and 3 are movement, 0 and 2 are static states
+		{
+			
+			float offset = CalcOffset();
+			
+			if (_2_Animation == 1) { // DOWN
+				if (_2_dice_yPos + offset >= transform.position.y)
+				{
+					_2_Animation++;
+					offset = 0;
+					_2_dice_yPos = transform.position.y;
+				}
+				else
+				{
+					_2_dice_yPos += offset;
+				}
+			} 
+			else if (_2_Animation == 3) // UP
+			{				
+				if (_2_dice_yPos - offset <= 0 - transform.position.y)
+				{
+					_2_Animation=0;
+					offset = 0;
+					_2_dice_yPos = 0 - transform.position.y;
+		        }
+		        else
+		        {
+					_2_dice_yPos -= offset;
+		    	}
 			}
 		}
 	}
@@ -128,22 +268,34 @@ public class Sidebar : MonoBehaviour
 		//print (time_diff.ToString () + " -- " + offset.ToString ());
 		return offset;
 	}
-	private void startDice()
+	private void startDice(int diceIndex)
 	{
-		_dice_numberToFind = -1;
+		if(diceIndex == 1)_1_dice_numberToFind = -1;
+		else _2_dice_numberToFind = -1;
 		resetDice ();
 	}
 	private void resetDice()
 	{
 		_dice_speed = 250;
-		_dice_counter = (float)((new System.Random()).NextDouble())*6f;
+		_1_dice_counter = (float)((new System.Random()).NextDouble())*6f;
+		_2_dice_counter = (float)((new System.Random()).NextDouble())*6f;
 	}
-    public List<int> getResults()
-    {
-        return _results;
-    }
-    public void resetResults()
-    {
-        _results.Clear();
+    public List<int> getResults(int diceIndex)
+	{
+		if(diceIndex == 1) return _1_results;
+		else return _2_results;
+	}
+    public void resetResults(int diceIndex)
+	{
+		if(diceIndex == 1)
+		{
+			_1_results.Clear();
+			_1_diceResults.Clear();
+    	}
+		else 
+		{
+			_2_results.Clear();
+			_2_diceResults.Clear();
+    	}
     }
 }

@@ -9,11 +9,13 @@ public class Player {
     private Texture _healthBarElement, _actionCircleTexture;
     private Rect _actionCircleRect;
     private bool _characterTouchWasAway; // for moving a character
+	public int ID;
 
-	public Player(Texture healthBarElement, Texture actionCircleTexture)
+	public Player(Texture healthBarElement, Texture actionCircleTexture, int ID)
 	{
 		_healthBarElement = healthBarElement;
         _actionCircleTexture = actionCircleTexture;
+		this.ID = ID;
 	}
 
 	public void Update()
@@ -36,19 +38,20 @@ public class Player {
 	}
 	public bool addCharacter(Character c)
     {
-        if (_characterTouchWasAway && _characterOrder[0].Equals(c))
+		// for move routine:
+        if (_characterTouchWasAway // character was taken away to set new position
+		    && _characterOrder[0].Equals(c))
         {
-            int r = GameManager._canvas.GetComponent<Sidebar>().getResults()[0];
+            int r = GameManager._canvas.GetComponent<Sidebar>().getResults(ID)[0];
 
             if (Mathf.Pow(TouchManager._touchList[TouchManager._touchList.Count - 1].getPosition().x - _actionCircleRect.center.x, 2)
                 + Mathf.Pow(Screen.height - TouchManager._touchList[TouchManager._touchList.Count - 1].getPosition().y - _actionCircleRect.center.y, 2) 
                 < Mathf.Pow(r * 50, 2)) // If new touch is in circle ...
             {
-
                 _characterOrder.RemoveAt(0); // to have stack-feeling
                 _characterTouchWasAway = false;
-                GameManager._canvas.GetComponent<Sidebar>().resetResults();
-                _actionCircleRect = new Rect(0, 0, 0, 0);
+				GameManager._canvas.GetComponent<Sidebar>().resetResults(ID);
+				_actionCircleRect = new Rect(0, 0, 0, 0);
 
                 TouchManager._touchList[TouchManager._touchList.Count - 1].setCharacter(c);
                 c.setPosition(new Rect(
@@ -59,6 +62,21 @@ public class Player {
 
                 _characterList.Add(c);
                 _lastRemovedCharacters.Remove(c);
+
+				if(_characterOrder.Count == 0) // every character has been set
+				{
+					if(ID == 1)
+					{
+						GameManager._currentGameMode = new MoveRoutine(GameManager._player2);
+						GameManager._canvas.GetComponent<Sidebar>().resetResults(2);
+						resetCharacterOrder();
+					}
+					else
+					{
+						// TODO start fight mode for player1
+					}
+				}
+
                 return true;
             }
         }
@@ -98,14 +116,17 @@ public class Player {
     }
     public void moveCharacter()
     {
-        if (GameManager._canvas.GetComponent<Sidebar>().getResults().Count == 0) return; // wenn noch nicht gewürfelt wurde, macht nichts
-
+		if (GameManager._canvas.GetComponent<Sidebar>().getResults(ID).Count == 0) return; // wenn noch nicht gewürfelt wurde, macht nichts
 
         if (!_characterTouchWasAway && !_characterList.Contains(_characterOrder[0]))
         {
             _characterTouchWasAway = true;
         }
-        int radius = GameManager._canvas.GetComponent<Sidebar>().getResults()[0];
+		int radius = GameManager._canvas.GetComponent<Sidebar>().getResults(ID)[0];
         _actionCircleRect = new Rect(_characterOrder[0].getPositionVector().x - 50 * radius, _characterOrder[0].getPositionVector().y - 100 - 50 * radius, radius * 100, radius * 100);
     }
+	public void fightCharacter()
+	{
+
+	}
 }
