@@ -9,15 +9,17 @@ public class GameManager : MonoBehaviour
 	public static Player _player1, _player2;
 	public Texture _healthBarTexture,
 		_circleTexture,
-        _actionCircleTexture;
+        _actionCircleTexture,
+		_healthBarBorder;
 
 	// Use this for initialization
 	void Start () 
 	{
-		_player1 = new Player(_healthBarTexture, _actionCircleTexture, 1);
-		_player2 = new Player(_healthBarTexture, _actionCircleTexture, 2);
+		_canvas = GetComponent<Canvas>();
+		_player1 = new Player(_healthBarTexture, _healthBarBorder, _actionCircleTexture, 1);
+		_player2 = new Player(_healthBarTexture, _healthBarBorder, _actionCircleTexture, 2);
 		_currentGameMode = new CharacterPlacing(_player1, _circleTexture);//,GUI);
-        _canvas = GetComponent<Canvas>();
+		GameManager._canvas.GetComponent<Sidebar>().enableSidebar(1);
 	}
 
 	void OnGUI()

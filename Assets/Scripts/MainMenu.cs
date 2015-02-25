@@ -28,6 +28,8 @@ public class MainMenu : MonoBehaviour {
 			   && pos.y >= Screen.height/2-50 && pos.y <= Screen.height/2+50)
 			{
 				GetComponent<Sidebar>().enabled = true;
+				GetComponent<Sidebar>().enableSidebar(1);
+				//GetComponent<Sidebar>().setSidebar(true, 1);
 				GetComponent<TouchManager>().enabled = true;
 				//GetComponent<TouchManager>().enable(false); // is in canvas activated but does not do anything
 				GetComponent<GameManager>().enabled = true;

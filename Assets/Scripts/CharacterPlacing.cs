@@ -23,14 +23,14 @@ public class CharacterPlacing : GameMode {
 	{
 		for(int i = 0; i < 5; i++)
 		{
-			GUI.DrawTexture(new Rect(150, 150 + 150*i, 100, 100), _circle_Texture);
+			GUI.DrawTexture(new Rect(650, 150 + 150*i, 100, 100), _circle_Texture);
 		}
 	}
 	public void OnGUI2()
 	{
 		for(int i = 0; i < 5; i++)
 		{
-			GUI.DrawTexture(new Rect(Screen.width - 250, 150 + 150*i, 100, 100), _circle_Texture);
+			GUI.DrawTexture(new Rect(Screen.width - 650, 150 + 150*i, 100, 100), _circle_Texture);
     	}
   	}
 	public void Update()
@@ -44,14 +44,13 @@ public class CharacterPlacing : GameMode {
 		{
 			for(int i = 0; i < 5; i++)
 			{
-				if((new Rect(150, 100 + 150*i, 100, 100)).Contains(f.getPosition()) && !_characterset[i]) // Touch is in circle
+				if((new Rect(650, 100 + 150*i, 100, 100)).Contains(f.getPosition()) && !_characterset[i]) // Touch is in circle
 				{
-					Debug.Log("Set Character");
+					//Debug.Log("Set Character");
                     //System.Random r = new System.Random();
                     //Character c = new Character(r.Next() % 100, 0, 3, 3, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
-                    Character c = new Character(100, 0, 3, 3, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
-					//c.setGUI(_gui);
-					c.getDamage(30);
+                    Character c = new Character(5, 0, 6, 0, 6, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
+					c.getDamage(4);
 					f.setCharacter(c);
 					_player.addCharacter(c);
 					_characterSetCounter++;
@@ -63,8 +62,10 @@ public class CharacterPlacing : GameMode {
 		if(_characterSetCounter == 5) // all characters set
 		{
 			GameManager._currentGameMode = new CharacterPlacing(GameManager._player2, _circle_Texture);
+			Debug.Log (GameManager._canvas);
             GameManager._canvas.GetComponent<Sidebar>().resetResults(1);
-            _player.resetCharacterOrder();
+			_player.resetCharacterOrder();
+			GameManager._canvas.GetComponent<Sidebar>().enableSidebar(2);
 		}
 	}
 	public void Update2 () 
@@ -73,14 +74,11 @@ public class CharacterPlacing : GameMode {
 		{
 			for(int i = 0; i < 5; i++)
 			{
-				if((new Rect(Screen.width - 250, 100 + 150*i, 100, 100)).Contains(f.getPosition()) && !_characterset[i]) // Touch is in circle
+				if((new Rect(Screen.width - 650, 100 + 150*i, 100, 100)).Contains(f.getPosition()) && !_characterset[i]) // Touch is in circle
 				{
-					Debug.Log("Set Character");
-					//System.Random r = new System.Random();
-					//Character c = new Character(r.Next() % 100, 0, 3, 3, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
-					Character c = new Character(100, 0, 3, 3, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
-					//c.setGUI(_gui);
-					c.getDamage(30);
+					//Debug.Log("Set Character");
+					Character c = new Character(5, 0, 6, 0, 6, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
+					c.getDamage(4);
 					f.setCharacter(c);
 					_player.addCharacter(c);
 					_characterSetCounter++;
@@ -93,7 +91,8 @@ public class CharacterPlacing : GameMode {
 		{
 			GameManager._currentGameMode = new MoveRoutine(GameManager._player1);
 			GameManager._canvas.GetComponent<Sidebar>().resetResults(2);
-			_player.resetCharacterOrder();
+			GameManager._player1.resetCharacterOrder();
+			GameManager._canvas.GetComponent<Sidebar>().enableSidebar(1);
 		}
 	}
 }

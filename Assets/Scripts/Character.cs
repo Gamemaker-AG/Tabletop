@@ -5,7 +5,7 @@ public class Character
 {
 	private int _maxHealth,
 		_currentHealth,
-		_accuracy, // ballistik
+		_ballistik,
 		_resistance,
 		_armor;
 	private Rect _position;
@@ -13,48 +13,78 @@ public class Character
 	private bool _visibility = true;
 	private Player _player;
 	private static Weapon[] _weapon = new Weapon[2];
+	private Weapon _currentWeapon;
 
-	public Character(int health, int weaponType, int accuracy, int resistance, int armor, Rect position, Player player)
+	public Character(int health, int weaponType, int ballistik, int resistance, int armor, Rect position, Player player)
 	{
-		
 		_maxHealth = health;
 		_currentHealth = health;
-		_accuracy = accuracy;
+		_ballistik = ballistik;
 		_resistance = resistance;
 		_armor = armor;
 		_position = position;
 		_player = player;
-		
-		if (_weapon[0] = null) {
-			_weapon[0] = new Weapon(8);
+
+		switch(weaponType)
+		{
+		case 0:
+			_currentWeapon = new Weapon(4, 2);
+			break;
+		case 1:
+			_currentWeapon = new Weapon(8, 4);
+			break;
 		}
-		if (weapon[1] = null) {
-			_weapon[1] = new Weapon(4);
-		}
-		
 	}
 	
 	public void setGUI(GUI gui)
 	{
 		//_gui = gui;
 	}
-
+	public bool isDead()
+	{
+		return _currentHealth == 0;
+	}
 	public void getDamage(int amountOfDamage)
 	{
 		_currentHealth -= amountOfDamage;
-		if(_currentHealth<0)_currentHealth=0;
+		if(_currentHealth<0)
+		{
+			_visibility = false;
+		}
 	}
-	public bool isDead()
-	{
-		return _currentHealth <= 0;
-	}
-	public void draw(Texture healthBarElement)
+	public void draw(Texture healthBarElement, Texture healthBarBorder)
 	{
 		if(!_visibility)return; // if NOT visible
 
 		Vector2 pivotPoint = new Vector2(_position.x, _position.y - 100);
 		int degree = (int)(360f*(_currentHealth/(float)_maxHealth));
-		GUI.color = new Color(((1f-_currentHealth/(float)_maxHealth)*509)/255, ((_currentHealth/(float)_maxHealth)*509)/255, 0);
+		if(_player.ID == 1)
+		{
+			GUI.color = Color.cyan;
+			GUI.DrawTexture(new Rect(_position.x - 50, _position.y - 150, 100, 100), healthBarBorder);
+			if(GameManager._player2.getSelectedEnemy() == this)
+			{
+				GUI.color = Color.blue;
+			}
+			else
+			{
+				GUI.color = new Color(((1f-_currentHealth/(float)_maxHealth)*509)/255, ((_currentHealth/(float)_maxHealth)*509)/255, 0);
+			}
+		}
+		else if(_player.ID == 2)
+		{
+			GUI.color = Color.magenta;
+			GUI.DrawTexture(new Rect(_position.x - 50, _position.y - 150, 100, 100), healthBarBorder);
+			if(GameManager._player1.getSelectedEnemy() == this)
+			{
+				GUI.color = Color.blue;
+			}
+			else
+			{
+				GUI.color = new Color(((1f-_currentHealth/(float)_maxHealth)*509)/255, ((_currentHealth/(float)_maxHealth)*509)/255, 0);
+			}
+		}
+		   
 		for(int i = 0; i <= degree; i++)
 		{
 			GUIUtility.RotateAroundPivot(1, pivotPoint);
@@ -79,17 +109,44 @@ public class Character
 	{
 		_position = newPosition;
 	}
+	public int getWeaponRadius()
+	{
+		return 100*_currentWeapon.getRange();
+	}
+	public int getWeaponStrength()
+	{
+		return _currentWeapon.getStrength();
+	}
+	public int getBallistic()
+	{
+		return _ballistik;
+	}
+	public int getResistance()
+	{
+		return _resistance;
+	}
+	public int getArmor()
+	{
+		return _armor;
+	}
 }
 
 public class Weapon{
 
-	private int _range;
+	private int _range,
+		_strength;
 	
-	public weapon (int range) {
+	public Weapon (int range, int strength) {
 		_range = range;
+		_strength = strength;
 	}
 	
-	public int getRange() {
+	public int getRange() 
+	{
 		return _range;
+	}
+	public int getStrength()
+	{
+		return _strength;
 	}
 }

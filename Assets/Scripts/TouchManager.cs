@@ -41,6 +41,12 @@ public class TouchManager : MonoBehaviour
 				_touchList[k].removePanel();
 				_touchList.RemoveAt(k);
 			}
+			else if(_touchList[k].isCharacter() && _touchList[k].getCharacter().isDead())
+			{
+				_touchList[k].removePanel();
+				_touchList.RemoveAt(k);
+				_touchList[k].getPlayer().removeCharacter(_touchList[k].getCharacter(), true); 
+			}
 		}
 
 		//Check if theres a touch without a Field
@@ -68,15 +74,15 @@ public class TouchManager : MonoBehaviour
 		
 		foreach(TouchField tf in _bufferTouchList)
 		{
-			if(Time.realtimeSinceStartup - tf.getTime() >= 1)
+			if(Time.realtimeSinceStartup - tf.getTime() >= 0)// TODO reset to delayed version 1)
 			{
-				Debug.Log ("Add to real list");
+				//Debug.Log ("Add to real list");
 				tf.setPanelPosition();
 
 				_touchList.Add(tf);
 				foreach(TouchField c in _lastRemovedCharacters)
 				{
-					Debug.Log ("Re-Add player");
+					//Debug.Log ("Re-Add player");
 					c.getPlayer().addCharacter(c.getCharacter()); // re-add character ; responsibility if this re-add is correct lies by the player class
 				}
 				//_bufferTouchList.Remove(tf);
@@ -87,7 +93,7 @@ public class TouchManager : MonoBehaviour
 		{
 			if(_bufferTouchList.Contains(tl))
 			{
-				Debug.Log ("Remove ");
+				//Debug.Log ("Remove ");
 				_bufferTouchList.Remove(tl);
 			}
 		}
