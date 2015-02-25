@@ -80,6 +80,7 @@ public class Player {
 					}
 					else
 					{
+						Debug.Log ("OOOOOOKKKKKK");
 						GameManager._currentGameMode = new FightRoutine(GameManager._player1);
 						GameManager._canvas.GetComponent<Sidebar>().resetResults(2);
 						GameManager._player1.resetCharacterOrder();
@@ -160,10 +161,10 @@ public class Player {
 		//Debug.Log ("FIGHT"+ radius);
 		_actionCircleRect = new Rect(_characterOrder[0].getPositionVector().x - radius, _characterOrder[0].getPositionVector().y - 100 - radius, radius * 2, radius * 2);
 
-
 		if (GameManager._canvas.GetComponent<Sidebar>().getResults(ID).Count >= 3)
 		{
-			if(GameManager._canvas.GetComponent<Sidebar>().getResults(ID)[0] > (7-_characterOrder[0].getBallistic()))
+			Debug.Log("G0");
+      		if(GameManager._canvas.GetComponent<Sidebar>().getResults(ID)[0] > (7-_characterOrder[0].getBallistic()))
 			{
 				Debug.Log("G1");
 				if(		(_characterOrder[0].getWeaponStrength() == _characterOrder[0].getResistance()
@@ -181,9 +182,11 @@ public class Player {
 						(_characterOrder[0].getWeaponStrength() +2 >= _characterOrder[0].getResistance()
 				    	&& GameManager._canvas.GetComponent<Sidebar>().getResults(ID)[1] == 6))
 				{
+					Debug.Log ("G2");
 					if(_enemyInRange.Count > _enemyIndex 
 					   && GameManager._canvas.GetComponent<Sidebar>().getResults(ID)[2] < _enemyInRange[_enemyIndex].getArmor())
 					{
+						Debug.Log ("Damage");
 						_enemyInRange[_enemyIndex].getDamage(_characterOrder[0].getWeaponStrength());
 						if(ID==1)
 						{
@@ -214,6 +217,7 @@ public class Player {
 				{
 					_enemyInRange.Clear();
 					_enemyIndex = 0;
+					GameManager._player1._enemyInRange.Clear();
 					GameManager._currentGameMode = new FightRoutine(GameManager._player2);
 					GameManager._canvas.GetComponent<Sidebar>().resetResults(1);
 					GameManager._player2.resetCharacterOrder();
@@ -225,6 +229,7 @@ public class Player {
 					GameManager._currentGameMode = new MoveRoutine(GameManager._player1);
 					GameManager._canvas.GetComponent<Sidebar>().resetResults(2);
 					GameManager._player1.resetCharacterOrder();
+					GameManager._player2._enemyInRange.Clear();
 					GameManager._canvas.GetComponent<Sidebar>().enableSidebar(1);
 				}
 			}

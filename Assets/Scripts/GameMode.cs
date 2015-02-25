@@ -5,4 +5,5 @@ public interface GameMode
 {
 	void Update ();
 	void OnGUI();
+	string getName();
 }

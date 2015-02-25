@@ -4,7 +4,6 @@ using System.Collections;
 public class GameManager : MonoBehaviour 
 {
 	public static GameMode _currentGameMode;
-	public static Player _currentPlayer;
     public static Canvas _canvas;
 	public static Player _player1, _player2;
 	public Texture _healthBarTexture,
@@ -27,6 +26,11 @@ public class GameManager : MonoBehaviour
 		_currentGameMode.OnGUI();
 		_player1.OnGUI();
 		_player2.OnGUI();
+		/*
+		GUI.color = Color.white;
+		if( == _player1) GUI.Label(new Rect(Screen.width/2-70, Screen.height - 70, 200, 100), _currentGameMode.getName() + " (Spieler 1)");
+		else GUI.Label(new Rect(Screen.width/2-70, Screen.height - 20, 200, 100), _currentGameMode.getName() + " (Spieler 2)");
+		*/
   	}
 	
 	// Update is called once per frame

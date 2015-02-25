@@ -14,6 +14,8 @@ public class Character
 	private Player _player;
 	private static Weapon[] _weapon = new Weapon[2];
 	private Weapon _currentWeapon;
+	public static int _counter = 0;
+	private int _privateCounter;
 
 	public Character(int health, int weaponType, int ballistik, int resistance, int armor, Rect position, Player player)
 	{
@@ -24,6 +26,9 @@ public class Character
 		_armor = armor;
 		_position = position;
 		_player = player;
+
+		_privateCounter = _counter;
+		_counter++;
 
 		switch(weaponType)
 		{
@@ -92,6 +97,8 @@ public class Character
 		}
 		GUI.color = Color.white;
 		GUIUtility.RotateAroundPivot(0-(degree+1), pivotPoint);
+
+		GUI.Label(new Rect(_position.x, _position.y - 100, 100, 100), ""+_currentWeapon.getRange());
 	}
 	public void changeVisibility()
 	{

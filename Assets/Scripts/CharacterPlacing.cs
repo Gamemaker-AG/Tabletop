@@ -7,6 +7,7 @@ public class CharacterPlacing : GameMode {
 	private Player _player;
 	//private GUI _gui;
 	private bool[] _characterset = new bool[5];
+	private string _name = "Einheiten platzieren";
 
 	public CharacterPlacing(Player player, Texture circle)//, GUI gui)
 	{
@@ -14,26 +15,44 @@ public class CharacterPlacing : GameMode {
 		//_gui = gui;
 		_circle_Texture = circle;
 	}
+	public string getName()
+	{
+		return _name;
+	}
 	public void OnGUI()
 	{
 		if(_player.ID == 1) OnGUI1 ();
 		else OnGUI2();
 	}
 	public void OnGUI1()
-	{
-		for(int i = 0; i < 5; i++)
+	{	
+		int i = 0;
+		GUI.color = Color.yellow;
+		for(i = 0; i < 2; i++)
 		{
 			GUI.DrawTexture(new Rect(650, 150 + 150*i, 100, 100), _circle_Texture);
 		}
+		GUI.color = Color.blue;
+		for(i = 2; i < 5; i++)
+		{
+			GUI.DrawTexture(new Rect(650, 150 + 150*i, 100, 100), _circle_Texture);
+    	}
 	}
 	public void OnGUI2()
 	{
-		for(int i = 0; i < 5; i++)
+		int i = 0;
+		GUI.color = Color.yellow;
+		for(i = 0; i < 2; i++)
+		{
+			GUI.DrawTexture(new Rect(Screen.width - 650, 150 + 150*i, 100, 100), _circle_Texture);
+		}
+		GUI.color = Color.blue;
+		for(i = 2; i < 5; i++)
 		{
 			GUI.DrawTexture(new Rect(Screen.width - 650, 150 + 150*i, 100, 100), _circle_Texture);
     	}
-  	}
-	public void Update()
+  }
+  public void Update()
 	{
 		if(_player.ID == 1) Update1 ();
 		else Update2();
@@ -49,8 +68,9 @@ public class CharacterPlacing : GameMode {
 					//Debug.Log("Set Character");
                     //System.Random r = new System.Random();
                     //Character c = new Character(r.Next() % 100, 0, 3, 3, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
-                    Character c = new Character(5, 0, 6, 0, 6, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
-					c.getDamage(4);
+					Character c = new Character(5, 0, 3, 4, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
+					if(i >= 3) c = new Character(4, 1, 4, 4, 4, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
+
 					f.setCharacter(c);
 					_player.addCharacter(c);
 					_characterSetCounter++;
@@ -77,8 +97,10 @@ public class CharacterPlacing : GameMode {
 				if((new Rect(Screen.width - 650, 100 + 150*i, 100, 100)).Contains(f.getPosition()) && !_characterset[i]) // Touch is in circle
 				{
 					//Debug.Log("Set Character");
-					Character c = new Character(5, 0, 6, 0, 6, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
-					c.getDamage(4);
+					Character c = new Character(5, 0, 3, 4, 3, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
+					if(i >= 3) c = new Character(4, 1, 4, 4, 4, new Rect(f.getPosition().x, Screen.height - f.getPosition().y + 100, 100, 100), _player); // some values
+          
+
 					f.setCharacter(c);
 					_player.addCharacter(c);
 					_characterSetCounter++;
